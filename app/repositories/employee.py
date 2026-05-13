@@ -72,6 +72,23 @@ class EmployeeRepository:
 
         await self.session.execute(stmt)
 
+    async def reassign_departments(
+        self,
+        from_department_ids: int,
+        to_department_id: int,
+    ):
+        stmt = (
+            update(Employee)
+            .where(
+                Employee.department_id.in_(from_department_ids)
+            )
+            .values(
+                department_id=to_department_id
+            )
+        )
+
+        await self.session.execute(stmt)
+
     async def delete_by_department_ids(
         self,
         department_ids: list[int],

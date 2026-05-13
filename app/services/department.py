@@ -199,15 +199,15 @@ class DepartmentService:
                     from_department_id=department_id,
                     to_department_id=reassign_to_department_id,
                 )
-                children_ids = await uow.departments.get_childrens(id=department_id)
-
-                await uow.departments.update_departments_parent(
-                    ids=children_ids,
-                    parent_id=reassign_to_department_id
+                children_ids: list[int] = await uow.departments.get_childrens(id=department_id)
+                children_ids.append(department_id)
+                await uow.employees.reassign_departments(
+                    from_department_ids=children_ids,
+                    to_department_id=reassign_to_department_id
                 )
 
                 await uow.departments.delete_by_ids(
-                    ids=[department_id]
+                    ids=children_ids
                 )
                 
             elif mode == "cascade":
