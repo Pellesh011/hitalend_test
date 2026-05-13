@@ -1,5 +1,4 @@
 import pytest
-from app.exceptions.department import DepartmentAlreadyExistsError
 
 
 @pytest.mark.anyio

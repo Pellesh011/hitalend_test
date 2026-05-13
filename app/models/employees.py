@@ -1,3 +1,8 @@
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.models.departments import Department
+
 from datetime import date, datetime
 from typing import Optional
 

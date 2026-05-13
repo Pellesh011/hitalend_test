@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Path, Query
+from fastapi import APIRouter, Depends, Path
 from starlette import status
 from app.api.deps.services import get_department_service, get_employee_service
 from app.api.schemas.departments import (

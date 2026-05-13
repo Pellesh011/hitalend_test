@@ -1,12 +1,10 @@
 import pytest
 
-from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 
 from app.main import app  # лучше импортировать реальный app
 from app.core.config import get_settings
 from app.api.deps.services import get_department_service, get_employee_service
-from app.api.routes.departments import router as departments_router
 
 
 class FakeSettings:

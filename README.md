@@ -32,3 +32,12 @@ http://localhost:8000/docs
 pip install -r requirements-dev.txt
 pytest
 ```
+
+## lint
+
+
+```bash
+pip install -r requirements-dev.txt
+black .
+ruff check . --fix
+```

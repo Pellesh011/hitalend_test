@@ -1,6 +1,5 @@
 # app/api/deps/services.py
 
-from fastapi import Depends
 
 from app.db.session import get_session_factory
 from app.services.department import (

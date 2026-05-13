@@ -1,4 +1,7 @@
+from app.db.base import Base
+import app.models  # noqa: F401
 import asyncio
+import logging
 from logging.config import fileConfig
 
 from sqlalchemy import pool
@@ -18,15 +21,13 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-import logging
 
 logger = logging.getLogger("alembic.env")
 
 # =========================
 # Import models (CRITICAL)
 # =========================
-from app.db.base import Base
-import app.models  # noqa: F401  <-- регистрирует все модели
+
 
 target_metadata = Base.metadata
 

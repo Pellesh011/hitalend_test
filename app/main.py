@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from app.api.middlewares.logging_middleware import logging_middleware
 
 from app.api.middlewares.trace_middleware import TraceMiddleware
 from app.core.logging_config import setup_logging
