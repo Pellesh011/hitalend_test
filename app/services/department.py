@@ -10,6 +10,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class DepartmentService:
     def __init__(self, uow):
         self.uow = uow
@@ -17,7 +18,7 @@ class DepartmentService:
     async def create_department(
         self,
         name: str,
-        parent_id:Optional[int],
+        parent_id: Optional[int],
     ):
         async with self.uow as uow:
             if parent_id:
@@ -33,16 +34,17 @@ class DepartmentService:
 
             return department
 
-    
     async def get_department_by_name_and_parent_id(
         self,
         name: str,
-        parent_id:Optional[int],
+        parent_id: Optional[int],
     ):
         async with self.uow as uow:
-            department = await uow.departments.get_department_by_name_and_parent_id(name, parent_id)
+            department = await uow.departments.get_department_by_name_and_parent_id(
+                name, parent_id
+            )
             return department
-        
+
     async def get_department_tree(
         self,
         department_id: int,
@@ -54,11 +56,9 @@ class DepartmentService:
 
         async with self.uow as uow:
 
-            rows = await (
-                uow.departments.get_department_tree(
-                    department_id=department_id,
-                    depth=depth,
-                )
+            rows = await uow.departments.get_department_tree(
+                department_id=department_id,
+                depth=depth,
             )
 
             if not rows:
@@ -84,9 +84,7 @@ class DepartmentService:
                 nodes[row["id"]] = node
 
                 if row["parent_id"]:
-                    children_map[
-                        row["parent_id"]
-                    ].append(node)
+                    children_map[row["parent_id"]].append(node)
 
             for node_id, node in nodes.items():
                 node["children"] = children_map.get(
@@ -98,17 +96,13 @@ class DepartmentService:
 
             if include_employees:
 
-                employees = await (
-                    uow.employees.get_by_department_ids(
-                        list(nodes.keys())
-                    )
+                employees = await uow.employees.get_by_department_ids(
+                    list(nodes.keys())
                 )
 
                 for employee in employees:
 
-                    nodes[
-                        employee.department_id
-                    ]["employees"].append(
+                    nodes[employee.department_id]["employees"].append(
                         {
                             "id": employee.id,
                             "full_name": employee.full_name,
@@ -119,7 +113,6 @@ class DepartmentService:
                     )
 
             return root
-        
 
     async def update_department(
         self,
@@ -135,24 +128,17 @@ class DepartmentService:
                 logger.info("Department not found")
                 raise DepartmentNotFoundError()
 
-
             if parent_id is not None:
 
                 if parent_id == department_id:
                     logger.info("Cannot set parent to itself")
-                    raise DepartmentCycleError(
-                        "Cannot set parent to itself"
-                    )
-
+                    raise DepartmentCycleError("Cannot set parent to itself")
 
                 if await uow.departments.would_create_cycle(
                     department_id=department_id,
                     new_parent_id=parent_id,
                 ):
-                    raise DepartmentCycleError(
-                        "Move would create cycle"
-                    )
-
+                    raise DepartmentCycleError("Move would create cycle")
 
             updated = await uow.departments.update_department(
                 department=department,
@@ -163,16 +149,11 @@ class DepartmentService:
             return updated
 
     async def delete_department(
-        self,
-        department_id: int,
-        mode: str,
-        reassign_to_department_id: Optional[int]
+        self, department_id: int, mode: str, reassign_to_department_id: Optional[int]
     ):
         async with self.uow as uow:
 
-            department = await uow.departments.get(
-                department_id
-            )
+            department = await uow.departments.get(department_id)
 
             if not department:
                 raise DepartmentNotFoundError()
@@ -180,14 +161,10 @@ class DepartmentService:
             if mode == "reassign":
 
                 if not reassign_to_department_id:
-                    raise ApiError(
-                        "reassign_to_department_id is required"
-                    )
+                    raise ApiError("reassign_to_department_id is required")
 
                 if reassign_to_department_id == department_id:
-                    raise ApiError(
-                        "Cannot reassign to same department"
-                    )
+                    raise ApiError("Cannot reassign to same department")
 
                 if await uow.departments.would_create_cycle(
                     department_id=department_id,
@@ -199,31 +176,23 @@ class DepartmentService:
                     from_department_id=department_id,
                     to_department_id=reassign_to_department_id,
                 )
-                children_ids: list[int] = await uow.departments.get_childrens(id=department_id)
+                children_ids: list[int] = await uow.departments.get_childrens(
+                    id=department_id
+                )
                 children_ids.append(department_id)
                 await uow.employees.reassign_departments(
                     from_department_ids=children_ids,
-                    to_department_id=reassign_to_department_id
+                    to_department_id=reassign_to_department_id,
                 )
 
-                await uow.departments.delete_by_ids(
-                    ids=children_ids
-                )
-                
+                await uow.departments.delete_by_ids(ids=children_ids)
+
             elif mode == "cascade":
-                subtree_ids = await (
-                    uow.departments.get_subtree_ids(
-                        department_id
-                    )
-                )
+                subtree_ids = await uow.departments.get_subtree_ids(department_id)
 
-                await uow.employees.delete_by_department_ids(
-                    subtree_ids
-                )
+                await uow.employees.delete_by_department_ids(subtree_ids)
 
-                await uow.departments.delete_by_ids(
-                    subtree_ids
-                )
+                await uow.departments.delete_by_ids(subtree_ids)
 
             else:
                 raise ApiError("Invalid mode")

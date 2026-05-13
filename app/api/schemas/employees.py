@@ -44,5 +44,3 @@ class EmployeeSchema(BaseModel):
     position: str
     hired_at: Optional[date]
     created_at: datetime
-
-

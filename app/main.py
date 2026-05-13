@@ -12,7 +12,7 @@ from app.exceptions.department import DepartmentValidationError
 from app.exceptions.handlers import (
     api_exception_handler,
     department_validation_handler,
-    domain_exception_handler
+    domain_exception_handler,
 )
 
 

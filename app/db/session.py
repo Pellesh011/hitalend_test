@@ -22,6 +22,7 @@ def get_engine():
         setup_sql_logging(_engine)
     return _engine
 
+
 def get_session_factory():
     global _session_factory
     if _session_factory is None:

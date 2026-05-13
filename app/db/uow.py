@@ -20,9 +20,11 @@ class UnitOfWork:
         self.departments = DepartmentRepository(self.session)
         self.employees = EmployeeRepository(self.session)
 
-        logger.info({
-            "event": "uow_start",
-        })
+        logger.info(
+            {
+                "event": "uow_start",
+            }
+        )
 
         return self
 
@@ -32,24 +34,30 @@ class UnitOfWork:
         if exc:
             await self.session.rollback()
 
-            logger.error({
-                "event": "uow_rollback",
-                "reason": str(exc),
-                "duration_ms": round(duration_ms, 2),
-            })
+            logger.error(
+                {
+                    "event": "uow_rollback",
+                    "reason": str(exc),
+                    "duration_ms": round(duration_ms, 2),
+                }
+            )
         else:
             await self.session.commit()
 
-            logger.info({
-                "event": "uow_commit",
-                "duration_ms": round(duration_ms, 2),
-            })
+            logger.info(
+                {
+                    "event": "uow_commit",
+                    "duration_ms": round(duration_ms, 2),
+                }
+            )
 
         await self.session.close()
 
-        logger.info({
-            "event": "uow_close",
-        })
+        logger.info(
+            {
+                "event": "uow_close",
+            }
+        )
 
     async def commit(self):
         logger.info({"event": "manual_commit"})

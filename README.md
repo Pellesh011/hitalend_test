@@ -29,5 +29,6 @@ http://localhost:8000/docs
 ## Тесты 
 
 ```bash
+pip install -r requirements-dev.txt
 pytest
 ```

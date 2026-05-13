@@ -21,6 +21,7 @@ class DepartmentCreateSchema(BaseModel):
         json_schema_extra={"example": 1},
     )
 
+
 class DepartmentDeleteSchema(BaseModel):
     mode: Literal["cascade", "reassign"] = Field(
         ...,
@@ -29,9 +30,7 @@ class DepartmentDeleteSchema(BaseModel):
 
     reassign_to_department_id: Optional[int] = Field(
         default=None,
-        description=(
-            "Required only when mode=reassign"
-        ),
+        description=("Required only when mode=reassign"),
     )
 
     @model_validator(mode="after")
@@ -43,6 +42,7 @@ class DepartmentDeleteSchema(BaseModel):
                 )
 
         return self
+
 
 class DepartmentResponseSchema(BaseModel):
     model_config = ConfigDict(
@@ -73,8 +73,8 @@ class DepartmentTreeSchema(BaseModel):
 
     children: list["DepartmentTreeSchema"] = []
 
-DepartmentTreeSchema.model_rebuild()
 
+DepartmentTreeSchema.model_rebuild()
 
 
 class DepartmentUpdateSchema(BaseModel):

@@ -32,7 +32,7 @@ class EmployeeRepository:
         await self.session.flush()
 
         return employee
-    
+
     async def get_by_department_ids(
         self,
         department_ids: list[int],
@@ -40,20 +40,14 @@ class EmployeeRepository:
 
         stmt = (
             select(Employee)
-            .where(
-                Employee.department_id.in_(
-                    department_ids
-                )
-            )
+            .where(Employee.department_id.in_(department_ids))
             .order_by(Employee.full_name)
         )
 
-        result = await self.session.execute(
-            stmt
-        )
+        result = await self.session.execute(stmt)
 
         return result.scalars().all()
-    
+
     async def reassign_department(
         self,
         from_department_id: int,
@@ -61,13 +55,8 @@ class EmployeeRepository:
     ):
         stmt = (
             update(Employee)
-            .where(
-                Employee.department_id
-                == from_department_id
-            )
-            .values(
-                department_id=to_department_id
-            )
+            .where(Employee.department_id == from_department_id)
+            .values(department_id=to_department_id)
         )
 
         await self.session.execute(stmt)
@@ -79,12 +68,8 @@ class EmployeeRepository:
     ):
         stmt = (
             update(Employee)
-            .where(
-                Employee.department_id.in_(from_department_ids)
-            )
-            .values(
-                department_id=to_department_id
-            )
+            .where(Employee.department_id.in_(from_department_ids))
+            .values(department_id=to_department_id)
         )
 
         await self.session.execute(stmt)
@@ -93,10 +78,6 @@ class EmployeeRepository:
         self,
         department_ids: list[int],
     ):
-        stmt = delete(Employee).where(
-            Employee.department_id.in_(
-                department_ids
-            )
-        )
+        stmt = delete(Employee).where(Employee.department_id.in_(department_ids))
 
         await self.session.execute(stmt)

@@ -1,4 +1,3 @@
-
 import pytest
 
 from fastapi import FastAPI
@@ -12,12 +11,13 @@ from app.api.routes.departments import router as departments_router
 
 class FakeSettings:
     DATABASE_URL = "sqlite+aiosqlite:///./test.db"
-    
+
 
 @pytest.fixture
 def app_fixture():
     app.dependency_overrides[get_settings] = lambda: FakeSettings()
     return app
+
 
 @pytest.fixture
 async def client(app_fixture):
@@ -49,22 +49,32 @@ class FakeDepartmentService:
         return None
 
     async def create_department(self, name, parent_id):
-        return {"id": 1, "name": name, "parent_id": parent_id, "created_at":"2026-05-12T12:00:00Z"}
+        return {
+            "id": 1,
+            "name": name,
+            "parent_id": parent_id,
+            "created_at": "2026-05-12T12:00:00Z",
+        }
 
     async def delete_department(self, department_id, mode, reassign_to_department_id):
         return None
 
     async def update_department(self, department_id, **kwargs):
-        return {"id": department_id, "parent_id": None,  "created_at":"2026-05-12T12:00:00Z", **kwargs}
+        return {
+            "id": department_id,
+            "parent_id": None,
+            "created_at": "2026-05-12T12:00:00Z",
+            **kwargs,
+        }
 
     async def get_department_tree(self, department_id, depth, include_employees):
         return {
             "id": department_id,
-            "name":"test dep",
+            "name": "test dep",
             "parent_id": None,
             "children": [],
             "employees": [] if include_employees else None,
-            "created_at":"2026-05-12T12:00:00Z"
+            "created_at": "2026-05-12T12:00:00Z",
         }
 
 
@@ -76,5 +86,5 @@ class FakeEmployeeService:
             "full_name": full_name,
             "position": position,
             "hired_at": hired_at,
-            "created_at":"2026-05-12T12:00:00Z"
+            "created_at": "2026-05-12T12:00:00Z",
         }

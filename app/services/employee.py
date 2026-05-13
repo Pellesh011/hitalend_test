@@ -25,14 +25,10 @@ class EmployeeService:
 
         async with self.uow as uow:
 
-            department = await uow.departments.get(
-                department_id
-            )
+            department = await uow.departments.get(department_id)
 
             if not department:
-                raise (
-                    EmployeeDepartmentNotFoundError()
-                )
+                raise (EmployeeDepartmentNotFoundError())
 
             employee = await uow.employees.create(
                 department_id=department_id,

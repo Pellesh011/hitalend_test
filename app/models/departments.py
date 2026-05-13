@@ -16,18 +16,14 @@ class Department(Base):
             "parent_id",
             name="uq_department_name_parent",
         ),
-
         # unique для root departments
         Index(
             "uq_department_root_name",
             "name",
             unique=True,
-            postgresql_where=text(
-                "parent_id IS NULL"
-            ),
+            postgresql_where=text("parent_id IS NULL"),
         ),
     )
-
 
     id: Mapped[int] = mapped_column(primary_key=True)
 

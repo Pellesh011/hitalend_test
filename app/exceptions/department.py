@@ -10,17 +10,13 @@ class DepartmentNotFoundError(ApiError):
 
 class DepartmentAlreadyExistsError(ApiError):
     status_code = status.HTTP_409_CONFLICT
-    detail = (
-        "Department already exists "
-        "within the same parent"
-    )
+    detail = "Department already exists " "within the same parent"
+
 
 class DepartmentCycleError(ApiError):
     status_code = 409
-    detail = (
-        "Cannot move department "
-        "inside its subtree"
-    )
+    detail = "Cannot move department " "inside its subtree"
+
 
 class DepartmentValidationError(Exception):
     def __init__(self, message: str):

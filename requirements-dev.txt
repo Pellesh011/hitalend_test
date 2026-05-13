@@ -1,0 +1,9 @@
+black
+isort
+ruff
+mypy
+pytest
+pytest-asyncio
+httpx
+pre-commit
+ipython

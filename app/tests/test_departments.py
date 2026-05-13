@@ -1,12 +1,10 @@
 import pytest
 from app.exceptions.department import DepartmentAlreadyExistsError
 
+
 @pytest.mark.anyio
 async def test_create_department(client, override_dependencies):
-    payload = {
-        "name": "IT",
-        "parent_id": None
-    }
+    payload = {"name": "IT", "parent_id": None}
 
     resp = await client.post("/departments/", json=payload)
 
@@ -16,8 +14,6 @@ async def test_create_department(client, override_dependencies):
     assert data["name"] == "IT"
     assert data["parent_id"] is None
     assert "id" in data
-
-
 
 
 @pytest.mark.anyio
@@ -46,11 +42,10 @@ async def test_delete_department(client):
     assert resp.status_code == 204
     assert resp.text == ""
 
+
 @pytest.mark.anyio
 async def test_update_department(client):
-    payload = {
-        "name": "New Name"
-    }
+    payload = {"name": "New Name"}
 
     resp = await client.patch("/departments/1", json=payload)
 
@@ -60,12 +55,13 @@ async def test_update_department(client):
     assert data["name"] == "New Name"
     assert data["id"] == 1
 
+
 @pytest.mark.anyio
 async def test_create_employee(client):
     payload = {
         "full_name": "John Doe",
         "position": "Engineer",
-        "hired_at": "2024-01-01"
+        "hired_at": "2024-01-01",
     }
 
     resp = await client.post("/departments/1/employees/", json=payload)

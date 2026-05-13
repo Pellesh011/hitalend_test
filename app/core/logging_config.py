@@ -22,7 +22,6 @@ LOGGING_CONFIG = {
             )
         },
     },
-
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
@@ -30,12 +29,10 @@ LOGGING_CONFIG = {
             "formatter": "default",
         },
     },
-
     "root": {
         "level": "INFO",
         "handlers": ["console"],
     },
-
     "loggers": {
         "uvicorn": {"level": "INFO"},
         "uvicorn.error": {"level": "INFO"},

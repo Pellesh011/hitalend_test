@@ -17,18 +17,21 @@ async def domain_exception_handler(request: Request, exc: Exception):
 
     last_frame = tb[-1] if tb else None
 
-    logger.error({
-        "event": "exception",
-        "type": exc.__class__.__name__,
-        "message": str(exc),
-        "file": last_frame.filename if last_frame else None,
-        "function": last_frame.name if last_frame else None,
-    })
+    logger.error(
+        {
+            "event": "exception",
+            "type": exc.__class__.__name__,
+            "message": str(exc),
+            "file": last_frame.filename if last_frame else None,
+            "function": last_frame.name if last_frame else None,
+        }
+    )
 
     return JSONResponse(
         status_code=getattr(exc, "status_code", 500),
         content={"detail": str(exc)},
     )
+
 
 async def api_exception_handler(
     request: Request,
@@ -38,13 +41,15 @@ async def api_exception_handler(
 
     last_frame = tb[-1] if tb else None
 
-    logger.error({
-        "event": "exception",
-        "type": exc.__class__.__name__,
-        "message": exc.detail,
-        "file": last_frame.filename if last_frame else None,
-        "function": last_frame.name if last_frame else None,
-    })
+    logger.error(
+        {
+            "event": "exception",
+            "type": exc.__class__.__name__,
+            "message": exc.detail,
+            "file": last_frame.filename if last_frame else None,
+            "function": last_frame.name if last_frame else None,
+        }
+    )
 
     return JSONResponse(
         status_code=exc.status_code,
@@ -52,7 +57,6 @@ async def api_exception_handler(
             "detail": exc.detail,
         },
     )
-
 
 
 async def department_validation_handler(

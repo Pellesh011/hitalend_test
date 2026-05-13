@@ -22,6 +22,7 @@ def get_department_service():
     uow = UnitOfWork(get_session_factory())
     return DepartmentService(uow)
 
+
 def get_employee_service():
     uow = UnitOfWork(get_session_factory())
     return EmployeeService(uow)

@@ -5,6 +5,7 @@ from sqlalchemy import text
 
 from app.models.departments import Department
 
+
 class DepartmentRepository:
     def __init__(self, session):
         self.session = session
@@ -59,12 +60,9 @@ class DepartmentRepository:
         )
 
         return result.mappings().all()
-    
-    
+
     async def get_department_by_name_and_parent_id(
-        self,
-        name: str,
-        parent_id: Optional[int]
+        self, name: str, parent_id: Optional[int]
     ) -> Optional[Department]:
 
         stmt = select(Department).where(
@@ -75,7 +73,7 @@ class DepartmentRepository:
         result = await self.session.execute(stmt)
 
         return result.scalars().first()
-    
+
     async def create(self, name: str, parent_id: Optional[int]) -> Department:
         department = Department(
             name=name,
@@ -88,9 +86,7 @@ class DepartmentRepository:
         return department
 
     async def would_create_cycle(
-        self,
-        department_id: int,
-        new_parent_id: Optional[int]
+        self, department_id: int, new_parent_id: Optional[int]
     ) -> bool:
 
         if new_parent_id is None:
@@ -128,7 +124,6 @@ class DepartmentRepository:
         )
 
         return result.scalar() is not None
-    
 
     async def get_subtree_ids(
         self,
@@ -160,35 +155,25 @@ class DepartmentRepository:
         )
 
         return [row[0] for row in result.all()]
-    
+
     async def get_childrens(self, id: int) -> list[int]:
         stmt = select(Department.id).where(Department.parent_id == id)
         result = await self.session.execute(stmt)
 
         return result.scalars().all()
 
-
-    async def delete_by_ids(
-        self,
-        ids: list[int]
-    ):
-        stmt = delete(Department).where(
-            Department.id.in_(ids)
-        )
+    async def delete_by_ids(self, ids: list[int]):
+        stmt = delete(Department).where(Department.id.in_(ids))
 
         await self.session.execute(stmt)
-    
+
     async def delete_subtree(
         self,
         department_id: int,
     ):
-        ids = await self.get_subtree_ids(
-            department_id
-        )
+        ids = await self.get_subtree_ids(department_id)
 
-        stmt = delete(Department).where(
-            Department.id.in_(ids)
-        )
+        stmt = delete(Department).where(Department.id.in_(ids))
 
         await self.session.execute(stmt)
 
@@ -207,17 +192,16 @@ class DepartmentRepository:
         await self.session.flush()
 
         return department
-    
+
     async def update_departments_parent(
         self,
         ids: list[int],
-        parent_id: int= None,
+        parent_id: int = None,
     ):
-        
-        stmt = update(Department).where(
-            Department.id.in_(ids)
-        ).values(parent_id=parent_id)
+
+        stmt = (
+            update(Department).where(Department.id.in_(ids)).values(parent_id=parent_id)
+        )
 
         await self.session.execute(stmt)
         await self.session.flush()
-
